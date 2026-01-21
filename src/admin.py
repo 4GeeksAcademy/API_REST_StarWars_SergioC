@@ -10,6 +10,7 @@ def setup_admin(app):
 
     class CharacterAdmin(ModelView):
         form_columns= ("name", "lastname", "height", "planet")
+         
     
 
 

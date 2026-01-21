@@ -67,36 +67,69 @@ def get_all_planets():
 
 
 
-
-
-# # [GET] /planets/<int:planet_id> Muestra la información de un solo planeta según su id.
-# @app.route('/people', methods=['GET'])
-# def all_people():
-#     return
-
-
+# [GET] /planets/<int:planet_id> Muestra la información de un solo planeta según su id.
+@app.route('/planet/<int:planet_id>', methods=['GET'])
+def get_planet(planet_id):
+    planet = db.session.get(Planet, planet_id)
+        
+    if not planet:
+        return jsonify({"details": "planet not found"}), 404
+    
+    informacion = planet.planet_informacion()
+    return jsonify(informacion), 200
 
 
 
 # # [GET] /users Listar todos los usuarios del blog.
-# @app.route('/people', methods=['GET'])
-# def all_people():
-#     return
+@app.route('/user', methods=['GET'])
+def get_all_users():
+    users = db.session.execute(select(User)).scalars().all()
+
+    return jsonify({"user": [user.user_information() for user in users]}), 200
 
 
 
+# [GET] /users/favorites Listar todos los favoritos que pertenecen al usuario actual.
+@app.route('/users/favorites', methods=['GET'])
+def get_users_favorites():
+    user_id = 1
 
+    user = db.session.get(User, user_id)
 
-# # [GET] /users/favorites Listar todos los favoritos que pertenecen al usuario actual.
-# @app.route('/people', methods=['GET'])
-# def all_people():
-#     return
+    if not user:
+        return jsonify({"details": "user not found"}), 404
+    
+    favorites = user.favorites
+
+    if not favorites:
+        return jsonify({
+            "planets": [],
+            "characters": [],
+            "starships": []
+        }), 200
+    
+    favorites = favorites[0]
+
+    return jsonify({
+        "planets": [
+            fav.planet.planet_informacion()
+            for fav in favorites.favorites_planet
+        ],
+        "characters": [
+            fav.character.mostrar_informacion()
+            for fav in favorites.favorites_character
+        ],
+        "starships": [
+            fav.starship.starship_informacion()
+            for fav in favorites.favorites_starship
+        ]
+    }), 200
 
 
 
 
 # # [POST] /favorite/planet/<int:planet_id> Añade un nuevo planet favorito al usuario actual con el id = planet_id.
-# @app.route('/people', methods=['GET'])
+# @app.route('/people', methods=['POST'])
 # def all_people():
 #     return
 
@@ -104,7 +137,7 @@ def get_all_planets():
 
 
 # # [POST] /favorite/people/<int:people_id> Añade un nuevo people favorito al usuario actual con el id = people_id.
-# @app.route('/people', methods=['GET'])
+# @app.route('/people', methods=['POST'])
 # def all_people():
 #     return
 
@@ -112,7 +145,7 @@ def get_all_planets():
 
 
 # # [DELETE] /favorite/planet/<int:planet_id> Elimina un planet favorito con el id = planet_id.
-# @app.route('/people', methods=['GET'])
+# @app.route('/people', methods=['DELETE'])
 # def all_people():
 #     return
 

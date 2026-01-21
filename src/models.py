@@ -19,8 +19,13 @@ class User(db.Model):
   # relationships
   favorites: Mapped[List["Favorites"]] = relationship(back_populates="user")
 
-
-
+  def user_information(self):
+    return {
+      "id": self.id,
+      "username": self.username,
+      "email": self.email,
+      "password": self.password,
+    }
 
 class Favorites(db.Model):
   __tablename__ = "favorites"
@@ -143,3 +148,11 @@ class Starship(db.Model):
 
   #relationship
   favorites_starship: Mapped[List["FavoriteStarship"]] = relationship(back_populates="starship")
+
+  def starship_informacion(self):
+    return {
+      "id": self.id,
+      "name": self.name,
+      "crew": self.crew,
+      "manufacturer": self.manufacturer,
+    }
