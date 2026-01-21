@@ -96,6 +96,14 @@ class Planet(db.Model):
   characters: Mapped[List["Character"]] = relationship(back_populates="planet")
   favorites_planet: Mapped[List["FavoritePlanet"]] = relationship(back_populates="planet")
 
+  def planet_informacion(self):
+    return {
+      "id": self.id,
+      "name": self.name,
+      "climate": self.climate,
+      "diameter": self.diameter,
+    }
+
 
 
 class Character(db.Model):
@@ -112,6 +120,16 @@ class Character(db.Model):
   # relationships
   planet: Mapped["Planet"] = relationship(back_populates="characters")
   favorites_character: Mapped[List["FavoriteCharacter"]] = relationship(back_populates="character")
+
+
+  def mostrar_informacion(self):
+    return {
+      "id": self.id,
+      "name": self.name,
+      "lastname": self.lastname,
+      "height": self.height,
+      "planet_id": self.planet_id,
+    }
 
   
 

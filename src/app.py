@@ -8,6 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
+from sqlalchemy import select
 from models import db, User, Favorites, FavoritePlanet, FavoriteCharacter, FavoriteStarship, Planet, Starship, Character
 #from models import Person
 
@@ -38,94 +39,90 @@ def sitemap():
 
 # [GET] /people Listar todos los registros de people en la base de datos.
 @app.route('/people', methods=['GET'])
-def all_people():
-    return
+def get_all_people():
+    characters = db.session.execute(select(Character)).scalars().all()
 
-
-
-
-
-
-
-
-
-
-
-
+    return jsonify({"people": [character.mostrar_informacion() for character in characters]}), 200
 
 
 # [GET] /people/<int:people_id> Muestra la información de un solo personaje según su id.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
-
-
+@app.route('/people/<int:people_id>', methods=['GET'])
+def get_character(people_id):
+    character = db.session.get(Character, people_id)
+        
+    if not character:
+        return jsonify({"details": "character not found"}), 404
+    
+    informacion = character.mostrar_informacion()
+    return jsonify(informacion), 200
 
 
 
 # [GET] /planets Listar todos los registros de planets en la base de datos.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+@app.route('/planet', methods=['GET'])
+def get_all_planets():
+    planets = db.session.execute(select(Planet)).scalars().all()
+
+    return jsonify({"planet": [planet.planet_informacion() for planet in planets]}), 200
 
 
 
 
 
-# [GET] /planets/<int:planet_id> Muestra la información de un solo planeta según su id.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [GET] /planets/<int:planet_id> Muestra la información de un solo planeta según su id.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
 
 
-# [GET] /users Listar todos los usuarios del blog.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [GET] /users Listar todos los usuarios del blog.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
 
 
-# [GET] /users/favorites Listar todos los favoritos que pertenecen al usuario actual.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [GET] /users/favorites Listar todos los favoritos que pertenecen al usuario actual.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
 
-# [POST] /favorite/planet/<int:planet_id> Añade un nuevo planet favorito al usuario actual con el id = planet_id.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [POST] /favorite/planet/<int:planet_id> Añade un nuevo planet favorito al usuario actual con el id = planet_id.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
 
-# [POST] /favorite/people/<int:people_id> Añade un nuevo people favorito al usuario actual con el id = people_id.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [POST] /favorite/people/<int:people_id> Añade un nuevo people favorito al usuario actual con el id = people_id.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
 
-# [DELETE] /favorite/planet/<int:planet_id> Elimina un planet favorito con el id = planet_id.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [DELETE] /favorite/planet/<int:planet_id> Elimina un planet favorito con el id = planet_id.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
 
-# [DELETE] /favorite/people/<int:people_id> Elimina un people favorito con el id = people_id.
-@app.route('/people', methods=['GET'])
-def all_people():
-    return
+# # [DELETE] /favorite/people/<int:people_id> Elimina un people favorito con el id = people_id.
+# @app.route('/people', methods=['GET'])
+# def all_people():
+#     return
 
 
 
